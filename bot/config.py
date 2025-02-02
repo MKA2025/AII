@@ -56,7 +56,7 @@ class Config(object):
         'CHUNK_SIZE': CHUNK_SIZE,
         'BUFFER_SIZE': 10,
         'MAX_CONCURRENT_DOWNLOADS': 5, 
-        'PROGRESS_UPDATE_DELAY': 0.5,  # seconds
+        'PROGRESS_UPDATE_DELAY': 0.5,
         'CACHE_SETTINGS': {
             'MAX_SIZE': 1000,
             'TTL': 3600,
@@ -88,6 +88,65 @@ class Config(object):
     }
 
     #--------------------
+    # ADMIN SETTINGS
+    #--------------------
+    ADMIN_SETTINGS = {
+        'PERMISSIONS': {
+            'super_admin': [
+                'can_manage_admins',
+                'can_broadcast',
+                'can_ban_users',
+                'can_manage_settings',
+                'can_view_logs',
+                'can_backup',
+                'can_manage_providers',
+                'can_manage_downloads'
+            ],
+            'moderator': [
+                'can_ban_users',
+                'can_view_logs',
+                'can_manage_downloads'
+            ],
+            'uploader': [
+                'can_upload',
+                'can_view_logs'
+            ]
+        },
+        'SECURITY': {
+            'SECRET_KEY': getenv('ADMIN_SECRET_KEY', 'your-secret-key'),
+            'ALGORITHM': 'HS256',
+            'SESSION_TIMEOUT': 3600,
+            'REQUIRE_2FA': bool(getenv('ADMIN_2FA', False)),
+            'IP_WHITELIST': getenv('ADMIN_IP_WHITELIST', '').split(','),
+            'MAX_LOGIN_ATTEMPTS': 3,
+            'LOCKOUT_TIME': 300,
+            'ALLOW_BACKUP': bool(getenv('ALLOW_BACKUP', True))
+        },
+        'LOGGING': {
+            'RETENTION_DAYS': 7,
+            'MAX_LOG_SIZE': 5 * 1024 * 1024,
+            'BACKUP_COUNT': 3,
+            'LOG_LEVEL': getenv('ADMIN_LOG_LEVEL', 'INFO')
+        },
+        'BACKUP': {
+            'INTERVAL': 24,
+            'MAX_BACKUPS': 7,
+            'INCLUDE_LOGS': True,
+            'COMPRESS': True,
+            'BACKUP_PATH': getenv('BACKUP_PATH', './backups')
+        },
+        'NOTIFICATIONS': {
+            'ERROR_THRESHOLD': 10,
+            'STORAGE_WARNING': 90,
+            'USER_REPORTS': True,
+            'ADMIN_CHAT_ID': getenv('ADMIN_CHAT_ID', ''),
+            'NOTIFY_ON_ERROR': True,
+            'NOTIFY_ON_BAN': True,
+            'NOTIFY_ON_NEW_USER': True
+        }
+    }
+
+    #--------------------
     # FILE/FOLDER NAMING
     #--------------------
     PLAYLIST_NAME_FORMAT = getenv("PLAYLIST_NAME_FORMAT", "{title} - Playlist")
@@ -109,37 +168,4 @@ class Config(object):
         'DOWNLOAD_VIDEOS': False,
         'API_KEY': getenv("TIDAL_API_KEY", None),
         'API_SECRET': getenv("TIDAL_API_SECRET", None)
-    }
-
-    #--------------------
-    # METADATA SETTINGS
-    #--------------------
-    METADATA_SETTINGS = {
-        'EMBED_METADATA': True,
-        'EMBED_ARTWORK': True,
-        'ARTWORK_QUALITY': 'HIGH',
-        'METADATA_LANG': 'ORIGINAL'
-    }
-
-    #--------------------
-    # SECURITY SETTINGS
-    #--------------------
-    SECURITY = {
-        'MAX_FILE_SIZE': 2 * 1024 * 1024 * 1024,  # 2GB
-        'ALLOWED_EXTENSIONS': ['.mp3', '.flac', '.m4a', '.zip', '.aac', '.wav'],
-        'RATE_LIMIT': {
-            'WINDOW': 60,  # 1 minute
-            'MAX_REQUESTS': 30,
-            'BURST': 10
-        },
-        'IP_BLACKLIST': [],
-        'REQUIRE_AUTH': True,
-        'AUTH_TIMEOUT': 3600,  # 1 hour
-        'MAX_LOGIN_ATTEMPTS': 3,
-        'LOCKOUT_TIME': 300,  # 5 minutes
-        'SECURE_HEADERS': {
-            'X-Frame-Options': 'DENY',
-            'X-Content-Type-Options': 'nosniff',
-            'X-XSS-Protection': '1; mode=block'
-        }
     }
