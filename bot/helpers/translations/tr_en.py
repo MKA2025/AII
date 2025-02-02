@@ -160,3 +160,105 @@ Auth Chats : {4}
 📅 𝐘𝐞𝐚𝐫 : {}
 💽 𝐀𝐥𝐛𝐮𝐦 : {}
 """
+
+#----------------
+#
+# ADMIN PANEL
+#
+#----------------
+    ADMIN_PANEL_TITLE = "🔧 Admin Control Panel"
+    ADMIN_USER_MANAGEMENT = "👥 User Management"
+    ADMIN_BOT_SETTINGS = "⚙️ Bot Settings" 
+    ADMIN_STORAGE = "💾 Storage Management"
+    ADMIN_LOGS = "📋 Logs"
+    ADMIN_BACKUP = "💿 Backup"
+    ADMIN_SECURITY = "🔒 Security"
+    ADMIN_PROVIDERS = "🔌 Providers"
+
+    # User Management
+    ADMIN_BAN_USER = "🚫 Ban User"
+    ADMIN_UNBAN_USER = "✅ Unban User"
+    ADMIN_BROADCAST = "📢 Broadcast"
+    ADMIN_USER_LIST = "📋 User List"
+    ADMIN_USER_BANNED = "User has been banned"
+    ADMIN_USER_UNBANNED = "User has been unbanned" 
+    ADMIN_USER_NOT_FOUND = "User not found"
+    ADMIN_BROADCAST_STARTED = "Broadcasting message to all users..."
+    ADMIN_BROADCAST_DONE = "Broadcast completed\n\nSuccess: {}\nFailed: {}"
+
+    # Security  
+    ADMIN_SESSION_EXPIRED = "⚠️ Admin session has expired"
+    ADMIN_INVALID_TOKEN = "❌ Invalid admin token"
+    ADMIN_PERMISSION_DENIED = "❌ Permission denied"
+    ADMIN_2FA_REQUIRED = "🔐 2FA verification required"
+    ADMIN_2FA_FAILED = "❌ 2FA verification failed"
+    ADMIN_LOGIN_ATTEMPTS = "Too many login attempts. Try again in {} minutes"
+    ADMIN_IP_BLOCKED = "⛔️ Your IP address is not whitelisted"
+
+    # Storage
+    ADMIN_STORAGE_STATS = """💾 Storage Statistics
+    
+Used Space: {}
+Free Space: {}
+Total Space: {}
+Usage: {}%"""
+    ADMIN_STORAGE_WARNING = "⚠️ Storage usage is above {}%"
+    ADMIN_CLEANUP_START = "🧹 Starting storage cleanup..."
+    ADMIN_CLEANUP_DONE = "✅ Storage cleanup completed\nFreed up: {}"
+
+    # Logs
+    ADMIN_LOG_DELETED = "Log file deleted"
+    ADMIN_LOG_CLEARED = "Logs cleared"
+    ADMIN_LOG_BACKUP = "Log backup created: {}"
+    ADMIN_LOG_NOT_FOUND = "Log file not found"
+
+    # Backup
+    ADMIN_BACKUP_START = "💿 Creating backup..."
+    ADMIN_BACKUP_DONE = "✅ Backup completed: {}"
+    ADMIN_BACKUP_FAILED = "❌ Backup failed: {}"
+    ADMIN_BACKUP_RESTORED = "✅ Backup restored successfully"
+    ADMIN_BACKUP_RESTORE_FAILED = "❌ Backup restore failed: {}"
+
+    # Providers
+    ADMIN_PROVIDER_ENABLED = "✅ {} provider enabled"
+    ADMIN_PROVIDER_DISABLED = "❌ {} provider disabled"
+    ADMIN_PROVIDER_CONFIG = "⚙️ {} Provider Configuration"
+    ADMIN_PROVIDER_UPDATED = "✅ Provider settings updated"
+    ADMIN_PROVIDER_ERROR = "❌ Provider error: {}"
+
+    # Settings
+    ADMIN_SETTINGS_UPDATED = "✅ Settings updated successfully"
+    ADMIN_SETTINGS_ERROR = "❌ Failed to update settings: {}"
+    ADMIN_RESTART_REQUIRED = "⚠️ Bot restart required to apply changes"
+
+    # Notifications 
+    ADMIN_NOTIFICATION_NEW_USER = "👤 New user registered: {}"
+    ADMIN_NOTIFICATION_ERROR = "⚠️ Error detected: {}"
+    ADMIN_NOTIFICATION_BAN = "🚫 User banned: {}\nReason: {}"
+
+    # Download Controls
+    ADMIN_DOWNLOAD_PAUSE = "⏸ Downloads paused"
+    ADMIN_DOWNLOAD_RESUME = "▶️ Downloads resumed"
+    ADMIN_DOWNLOAD_CANCEL = "⚠️ Download cancelled: {}"
+    ADMIN_DOWNLOAD_LIMIT = "📥 Download limit set to: {}/day"
+    ADMIN_CONCURRENT_LIMIT = "⚡️ Concurrent downloads limit: {}"
+
+    # Quality Controls
+    ADMIN_QUALITY_UPDATED = "✨ Quality settings updated for {}"
+    ADMIN_QUALITY_ERROR = "❌ Failed to update quality settings: {}"
+
+    # API Stats
+    ADMIN_API_STATS = """📊 API Statistics
+
+Requests Today: {}
+Success Rate: {}%
+Error Rate: {}%
+Average Response Time: {}ms"""
+
+    # Database Stats
+    ADMIN_DB_STATS = """🗄 Database Statistics
+
+Total Records: {}
+Active Users: {}
+Storage Used: {}
+Last Backup: {}"""
