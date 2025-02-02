@@ -1,4 +1,7 @@
 class EN(object):
+    # Add language attribute
+    __language__ = "en"
+    
     DOWNLOAD_START = "Starting Download..."
     UPLOAD_START = "Starting Upload..."
     UPLOAD_SUCCESS = "Thanks for using bot"
