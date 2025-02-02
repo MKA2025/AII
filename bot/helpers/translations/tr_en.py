@@ -1,29 +1,24 @@
 class EN(object):
-    __language__ = 'en'
-#----------------
-#
-# BASICS
-#
-#----------------
-    WELCOME_MSG = "Hello {}"
-    DOWNLOADING = 'Downloading........'
-    DOWNLOAD_PROGRESS = """
-<b>╭─ Progress
-│
-├ {0}
-│
-├ Done : <code>{1} / {2}</code>
-│
-├ Title : <code>{3}</code>
-│
-╰─ Type : <code>{4}</code></b>
-"""
-    UPLOADING = 'Uploading........'
+    DOWNLOAD_START = "Starting Download..."
+    UPLOAD_START = "Starting Upload..."
+    UPLOAD_SUCCESS = "Thanks for using bot"
+    UPLOAD_FAILED = "Sorry ! something went wrong \n\nPress /clean to clean temporary files and folders"
+    ERR_OPEN_LINK = "Sorry cannot directly access links. Please use /start with link only"
+    PROGRESS_BAR = """**{1}%** | [{0}{2}]"""
+    DOWNLOADING = """\n\n**↳ Speed**: `{}/s`
+**↳ Done**: `{}`
+**↳ Size**: `{}`
+**↳ Time**: `{}`"""
+    UPLOADING = """\n\n**↳ Speed**: `{}/s`
+**↳ Done**: `{}`
+**↳ Size**: `{}`
+**↳ Time**: `{}`"""
+    CLEANING = """🧹 Cleaning Temp Files and Folders"""
+    FETCHING = 'Fetching Details...'
+    DOWNLOADING_FILE = "Downloading File..."
+    UPLOADING_FILE = "Uploading File..."
     ZIPPING = 'Zipping........'
     TASK_COMPLETED = "Download Finished"
-
-
-
 
 #----------------
 #
@@ -61,10 +56,6 @@ Auth Chats : {4}
     USER_EXIST = 'This ID already exist'
     AUTH_ID = 'Successfully Authed'
 
-
-
-
-
 #----------------
 #
 # BUTTONS
@@ -82,7 +73,7 @@ Auth Chats : {4}
 
     BOT_PUBLIC = 'Bot Public - {}'
     BOT_LANGUAGE = 'Language'
-    ANTI_SPAM = 'Anit Spam - {}'
+    ANTI_SPAM = 'Anti Spam - {}'
     LANGUAGE = 'Language'
     QUALITY = 'Quality'
     AUTHORIZATION = "Authorizations"
@@ -104,6 +95,7 @@ Auth Chats : {4}
 
     RCLONE_LINK = 'Direct Link'
     INDEX_LINK = 'Index Link'
+
 #----------------
 #
 # ERRORS
@@ -114,43 +106,57 @@ Auth Chats : {4}
     ERR_QOBUZ_NOT_STREAMABLE = "This track/album is not available to download."
     ERR_QOBUZ_NOT_AVAILABLE = "This track is not available in your region"
     ERR_LOGIN_TIDAL_TV_FAILED = "Login failed : {}"
+
 #----------------
 #
-# ERRORS
+# WARNINGS
 #
 #----------------
     WARNING_NO_TIDAL_TOKEN = 'No TV/Auto token-secret added'
+
+#----------------
+#
+# ZIP SETTINGS
+#
+#----------------
+    ZIP_SETTINGS = {
+        'ENABLED': 'ZIP feature is {}',
+        'SIZE_UPDATED': 'Maximum ZIP size set to {}MB',
+        'INVALID_SIZE': 'Please enter a valid size between 1-2000 MB',
+        'NO_PERMISSION': "You don't have permission to change ZIP settings",
+        'INVALID_SETTING': 'Invalid ZIP setting or value'
+    }
+
 #----------------
 #
 # TRACK & ALBUM POSTS
 #
 #----------------
-    ALBUM_TEMPLATE = """
-🎶 <b>Title :</b> {title}
-👤 <b>Artist :</b> {artist}
-📅 <b>Release Date :</b> {date}
-🔢 <b>Total Tracks :</b> {totaltracks}
-📀 <b>Total Volumes :</b> {totalvolume}
-💫 <b>Quality :</b> {quality}
-📡 <b>Provider :</b> {provider}
-🔞 <b>Explicit :</b> {explicit}
+    TRACK_POST = """
+𝐓𝐢𝐭𝐥𝐞 : {}
+𝐀𝐫𝐭𝐢𝐬𝐭 : {}
+𝐀𝐥𝐛𝐮𝐦 : {}
+𝐘𝐞𝐚𝐫 : {}
 """
-
-    PLAYLIST_TEMPLATE = """
-🎶 <b>Title :</b> {title}
-🔢 <b>Total Tracks :</b> {totaltracks}
-💫 <b>Quality :</b> {quality}
-📡 <b>Provider :</b> {provider}
+    ALBUM_LINK = """
+🎵 𝐀𝐥𝐛𝐮𝐦 : {}
+👤 𝐀𝐫𝐭𝐢𝐬𝐭 : {}
+📅 𝐑𝐞𝐥𝐞𝐚𝐬𝐞𝐝 : {}
 """
-
-    SIMPLE_TITLE = """
-Name : {0}
-Type : {1}
-Provider : {2}
+    QOBUZ_LINK = """
+<b>🎵 𝐓𝐢𝐭𝐥𝐞 :</b> <code>{}</code>
+<b>💽 𝐅𝐨𝐫𝐦𝐚𝐭 :</b> <code>{}bit / {}kHz</code> <code>{}</code>
+<b>📊 𝐁𝐢𝐭 𝐑𝐚𝐭𝐞 :</b> <code>{}kbps</code>
 """
-
-ARTIST_TEMPLATE = """
-👤 <b>Artist :</b> {artist}
-💫 <b>Quality :</b> {quality}
-📡 <b>Provider :</b> {provider}
+    TIDAL_ALBUM = """
+🎵 𝐓𝐢𝐭𝐥𝐞 : {}
+👤 𝐀𝐫𝐭𝐢𝐬𝐭 : {}
+📅 𝐘𝐞𝐚𝐫 : {}
+🎼 𝐓𝐫𝐚𝐜𝐤𝐬 𝐜𝐨𝐮𝐧𝐭 : {}
+"""
+    TIDAL_TRACK = """
+🎵 𝐓𝐢𝐭𝐥𝐞 : {}
+👤 𝐀𝐫𝐭𝐢𝐬𝐭 : {}
+📅 𝐘𝐞𝐚𝐫 : {}
+💽 𝐀𝐥𝐛𝐮𝐦 : {}
 """
