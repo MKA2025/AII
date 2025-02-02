@@ -1,9 +1,10 @@
 import asyncio
 import aiofiles
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 from pathlib import Path
+import time
 
 from bot.config import Config
 from bot.logger import LOGGER
@@ -15,10 +16,24 @@ class EnhancedDownloader:
     def __init__(self, client: Optional[EnhancedTidalClient] = None):
         self.client = client or EnhancedTidalClient()
         self.config = Config.TIDAL_ENHANCED
-        self.download_semaphore = asyncio.Semaphore(
+        self._rate_limit = self.config['RATE_LIMIT_PER_MINUTE']
+        self._request_times = []
+        self._download_semaphore = asyncio.Semaphore(
             self.config['MAX_CONCURRENT_DOWNLOADS']
         )
         
+    async def _check_rate_limit(self):
+        """Implement rate limiting"""
+        now = time.time()
+        self._request_times = [t for t in self._request_times if now - t < 60]
+        
+        if len(self._request_times) >= self._rate_limit:
+            wait_time = 60 - (now - self._request_times[0])
+            if wait_time > 0:
+                await asyncio.sleep(wait_time)
+                
+        self._request_times.append(now)
+
     async def download_track(
         self,
         track_id: int,
@@ -26,11 +41,12 @@ class EnhancedDownloader:
         quality: str = None
     ) -> Optional[str]:
         """Download a single track with retry logic"""
+        await self._check_rate_limit()
         quality = quality or self.config['DOWNLOAD_QUALITY']
         
         for attempt in range(self.config['RETRY_ATTEMPTS']):
             try:
-                async with self.download_semaphore:
+                async with self._download_semaphore:
                     # Get track metadata
                     track_data = await tidalapi.get_track(track_id)
                     
