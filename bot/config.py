@@ -1,11 +1,22 @@
 import os
-from typing import Dict, Any
+import logging
+from os import getenv
+from dotenv import load_dotenv
 
-class Config:
-    # Existing config...
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+LOGGER = logging.getLogger(__name__)
+
+if not os.environ.get("ENV"):
+    load_dotenv('.env', override=True)
+
+class Config(object):
+    # Existing configs...
     
     # Tidal Enhanced Settings
-    TIDAL_ENHANCED: Dict[str, Any] = {
+    TIDAL_ENHANCED = {
         'MAX_CONCURRENT_DOWNLOADS': 5,
         'RETRY_ATTEMPTS': 3,
         'RETRY_DELAY': 1,
@@ -21,14 +32,36 @@ class Config:
         'ENABLED': True,
         'MAX_SIZE': 2000000000,  # 2GB default
         'CHUNK_SIZE': 8192,
-        'PUBLIC_ACCESS': True
+        'PUBLIC_ACCESS': True,
+        'ALLOWED_SETTINGS': ['zip_enabled', 'max_zip_size']
     }
 
-    # Base paths
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    DOWNLOAD_BASE_DIR = os.path.join(BASE_DIR, 'downloads')
-    TEMP_DIR = os.path.join(BASE_DIR, 'temp')
+    # Your existing config settings...
+    TG_BOT_TOKEN = getenv("TG_BOT_TOKEN")
+    APP_ID = int(getenv("APP_ID"))
+    API_HASH = getenv("API_HASH")
+    DATABASE_URL = getenv("DATABASE_URL")
+    BOT_USERNAME = getenv("BOT_USERNAME")
+    ADMINS = set(int(x) for x in getenv("ADMINS").split())
 
-    # Create required directories
-    os.makedirs(DOWNLOAD_BASE_DIR, exist_ok=True)
-    os.makedirs(TEMP_DIR, exist_ok=True)
+    # Working directories
+    WORK_DIR = getenv("WORK_DIR", "./bot/")
+    DOWNLOADS_FOLDER = getenv("DOWNLOADS_FOLDER", "DOWNLOADS")
+    DOWNLOAD_BASE_DIR = WORK_DIR + DOWNLOADS_FOLDER
+    LOCAL_STORAGE = getenv("LOCAL_STORAGE", DOWNLOAD_BASE_DIR)
+
+    # Naming formats
+    PLAYLIST_NAME_FORMAT = getenv("PLAYLIST_NAME_FORMAT", "{title} - Playlist")
+    TRACK_NAME_FORMAT = getenv("TRACK_NAME_FORMAT", "{title} - {artist}")
+
+    # Tidal settings
+    ENABLE_TIDAL = getenv("ENABLE_TIDAL", None)
+    TIDAL_MOBILE = getenv("TIDAL_MOBILE", None)
+    TIDAL_MOBILE_TOKEN = getenv("TIDAL_MOBILE_TOKEN", None)
+    TIDAL_ATMOS_MOBILE_TOKEN = getenv("TIDAL_ATMOS_MOBILE_TOKEN", None)
+    TIDAL_TV_TOKEN = getenv("TIDAL_TV_TOKEN", None)
+    TIDAL_TV_SECRET = getenv("TIDAL_TV_SECRET", None)
+    TIDAL_CONVERT_M4A = getenv("TIDAL_CONVERT_M4A", False)
+
+    # Concurrent settings
+    MAX_WORKERS = int(getenv("MAX_WORKERS", 5))
