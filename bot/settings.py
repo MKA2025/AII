@@ -26,14 +26,14 @@ class BotSettings:
         self.set_db()
         
         # Feature flags with default values
-        self.bot_public = False
+        self.bot_public = True 
         self.anti_spam = False
         self.post_art = False
         self.sort_playlist = True
         self.disable_sort_link = False
         self.playlist_conc = False
         self.playlist_zip = True
-        self.artist_zip = True
+        self.artist_zip = False 
         self.album_zip = True
         self.artist_batch = False
         
