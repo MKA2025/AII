@@ -18,31 +18,66 @@ class BotSettings:
     def __init__(self):
         # Initialize basic settings
         self.bot_lang = "en"
-        self.last_updated = "2025-02-03 04:39:36"
+        self.last_updated = "2025-02-03 04:51:23"  # Updated current time
         self.current_user = "MKA2025"
+        
+        # Initialize required configs with defaults
+        self._init_configs()
         
         # Set core configurations
         self.set_language()
         self.set_db()
         
         # Feature flags with default values
-        self.bot_public = True 
+        self.bot_public = True
         self.anti_spam = False
         self.post_art = False
         self.sort_playlist = True
         self.disable_sort_link = False
         self.playlist_conc = False
         self.playlist_zip = True
-        self.artist_zip = False 
+        self.artist_zip = False
         self.album_zip = True
         self.artist_batch = False
         
         # Load settings from database
         self._load_db_settings()
 
+    def _init_configs(self):
+        """Initialize required configs with default values"""
+        # Handle API_ID
+        try:
+            api_id = getattr(Config, 'API_ID', None)
+            if not api_id or api_id == '':
+                Config.API_ID = 0
+            else:
+                Config.API_ID = int(str(api_id))
+        except (ValueError, TypeError):
+            Config.API_ID = 0
+
+        # Handle OWNER_ID
+        try:
+            owner_id = getattr(Config, 'OWNER_ID', None)
+            if not owner_id or owner_id == '':
+                Config.OWNER_ID = 0
+            else:
+                Config.OWNER_ID = int(str(owner_id))
+        except (ValueError, TypeError):
+            Config.OWNER_ID = 0
+
+        # Set other required configs
+        if not hasattr(Config, 'API_HASH') or not Config.API_HASH:
+            Config.API_HASH = ""
+            
+        if not hasattr(Config, 'BOT_TOKEN') or not Config.BOT_TOKEN:
+            Config.BOT_TOKEN = ""
+            
+        if not hasattr(Config, 'DATABASE_URL') or not Config.DATABASE_URL:
+            Config.DATABASE_URL = ""
+
     def _load_db_settings(self):
         """Load settings from database if they exist"""
-        if not hasattr(Config, 'DATABASE_URL'):
+        if not hasattr(Config, 'DATABASE_URL') or not Config.DATABASE_URL:
             return
             
         try:
