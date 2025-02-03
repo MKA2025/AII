@@ -8,173 +8,172 @@ import bot.helpers.translations as lang
 from config import Config
 from bot.logger import LOGGER
 
-from .helpers.database.pg_impl import set_db
-from .helpers.qobuz.qopy import qobuz_api
-from .helpers.deezer.dzapi import deezerapi
-from .helpers.tidal.tidal_api import tidalapi
-from .helpers.translations import lang_available
-
-
-# For simple boolean values
-def __getvalue__(var):
-    value, _ = set_db.get_variable(var)
-    return value if value else False
-
-def __encrypt_string__(string):
-    s = bytes(string, 'utf-8')
-    s = base64.b64encode(s)
-    return s
-
-def __decrypt_string__(string):
-    try:
-        s = base64.b64decode(string)
-        s = s.decode()
-        return s
-    except:
-        return string
-
-
+from .config import Config
+from .database.postgres_impl import set_db,users,chats,settings_dict
+from .helpers.tidal.tidalapi import tidalapi
+from .helpers.utils.common import check_id
+from datetime import datetime
 
 class BotSettings:
     def __init__(self):
-        self.deezer = False
-        self.qobuz = False
-        self.tidal = None
-        self.admins = Config.ADMINS
-
+        # Initialize basic settings with current UTC time
+        self.bot_lang = "en"
+        self.last_updated = "2025-02-03 01:20:02"  # Current UTC time
+        self.current_user = "MKA2025"
+        
+        # Set core configurations
         self.set_language()
-
-        db_users, _ = set_db.get_variable('AUTH_USERS')
-        self.auth_users = json.loads(db_users) if db_users else []
-        db_chats, _ = set_db.get_variable('AUTH_CHATS')
-        self.auth_chats = json.loads(db_chats) if db_chats else []
-
-        self.rclone = False
-        self.check_upload_mode()
-
-        spam, _ = set_db.get_variable('ANTI_SPAM') #string
-        self.anti_spam = spam if spam else 'OFF'
-
-        self.bot_public = __getvalue__('BOT_PUBLIC')
-
-        # post photo of album/artist
-        self.art_poster = __getvalue__('ART_POSTER')
-
-        self.playlist_sort = __getvalue__('PLAYLIST_SORT')
-        # disable returning links for sorted playlist for cleaner chat
-        self.disable_sort_link = __getvalue__('PLAYLIST_LINK_DISABLE')
-
-        # Multithreaded downloads
-        self.artist_batch = __getvalue__('ARTIST_BATCH_UPLOAD')
-        self.playlist_conc = __getvalue__('PLAYLIST_CONCURRENT')
+        self.set_db()
         
-        link_option, _ = set_db.get_variable('RCLONE_LINK_OPTIONS') #str
-        self.link_options = link_option if self.rclone and link_option else 'False'
+        # Feature flags with default values
+        self.bot_public = False
+        self.anti_spam = False
+        self.post_art = False
+        self.sort_playlist = True
+        self.disable_sort_link = False
+        self.playlist_conc = False
+        self.playlist_zip = True
+        self.artist_zip = True
+        self.album_zip = True
+        self.artist_batch = False
+        
+        # Load settings from database
+        self._load_db_settings()
 
-        self.album_zip = __getvalue__('ALBUM_ZIP')
-        self.playlist_zip = __getvalue__('PLAYLIST_ZIP')
-        self.artist_zip = __getvalue__('ARTIST_ZIP')
-
-        self.clients = []
-
-
-    def check_upload_mode(self):
-        if os.path.exists('rclone.conf'):
-            self.rclone = True
-        elif Config.RCLONE_CONFIG:
-            if Config.RCLONE_CONFIG.startswith('http'):
-                rclone = requests.get(Config.RCLONE_CONFIG, allow_redirects=True)
-                if rclone.status_code != 200:
-                    LOGGER.info("RCLONE : Error retreiving file from Config URL")
-                    self.rclone = False
-                else:
-                    with open('rclone.conf', 'wb') as f:
-                        f.write(rclone.content)
-                    self.rclone = True
-            
-        db_upload, _ = set_db.get_variable('UPLOAD_MODE')
-        if self.rclone and db_upload == 'RCLONE':
-            self.upload_mode = 'RCLONE'
-        elif db_upload == 'Telegram' or db_upload == 'Local':
-            self.upload_mode = db_upload
-        else:
-            self.upload_mode = 'Local'
-    
-
-    async def login_qobuz(self):
-        if Config.QOBUZ_EMAIL or Config.QOBUZ_USER:
-            try:
-                await qobuz_api.login()
-                self.qobuz = qobuz_api
-                self.clients.append(qobuz_api)
-                quality, _ = set_db.get_variable("QOBUZ_QUALITY")
-                if quality:
-                    bot_set.qobuz.quality = int(quality)
-            except Exception as e:
-                LOGGER.error(e)
-    
-
-    async def login_deezer(self):
-        if Config.DEEZER_ARL or Config.DEEZER_EMAIL:
-            if Config.DEEZER_BF_SECRET and Config.DEEZER_TRACK_URL_KEY:
-                login = await deezerapi.login()
-                if login:
-                    self.deezer = deezerapi
-                    self.clients.append(deezerapi)
-                    LOGGER.info(f"DEEZER : Subscription - {deezerapi.user['OFFER_NAME']}")
-                else:
-                    try:
-                        await deezerapi.session.close()
-                    except:pass
-            else:
-                LOGGER.error('DEEZER : Check BF_SECRET and TRACK_URL_KEY')
-
-
-    async def login_tidal(self):
-        # only load the object if needed
-        self.can_enable_tidal = Config.ENABLE_TIDAL
-        if not self.can_enable_tidal:
+    def _load_db_settings(self):
+        """Load settings from database if they exist"""
+        if not Config.DATABASE_URL:
             return
-
-        _, refresh_token = set_db.get_variable("TIDAL_AUTH_DATA")
-
-        if refresh_token:
-            data = json.loads(__decrypt_string__(refresh_token))
-            sub = await tidalapi.login_from_saved(data)
-            if sub:
-                LOGGER.info("TIDAL : Loaded account - " + sub)
-                
-                quality, _ = set_db.get_variable('TIDAL_QUALITY')
-                if quality:
-                    tidalapi.quality = quality
-                spatial, _ = set_db.get_variable('TIDAL_SPATIAL')
-                if spatial:
-                    tidalapi.spatial = spatial
-                self.tidal = tidalapi 
-                self.clients.append(tidalapi) 
-
-
-    async def save_tidal_login(self, session):
-        data = {
-            "user_id" : session.user_id,
-            "refresh_token" : session.refresh_token,
-            "country_code" : session.country_code
-        }
-
-        txt = json.dumps(data)
-        set_db.set_variable("TIDAL_AUTH_DATA", 0, True, __encrypt_string__(txt))
-        
-
-
+            
+        try:
+            db_settings = settings_dict.find_one({}) or {}
+            self.bot_public = db_settings.get('bot_public', self.bot_public)
+            self.anti_spam = db_settings.get('anti_spam', self.anti_spam)
+            self.post_art = db_settings.get('post_art', self.post_art)
+            self.sort_playlist = db_settings.get('sort_playlist', self.sort_playlist)
+            self.disable_sort_link = db_settings.get('disable_sort_link', self.disable_sort_link)
+            self.playlist_conc = db_settings.get('playlist_conc', self.playlist_conc)
+            self.playlist_zip = db_settings.get('playlist_zip', self.playlist_zip)
+            self.artist_zip = db_settings.get('artist_zip', self.artist_zip)
+            self.album_zip = db_settings.get('album_zip', self.album_zip)
+            self.artist_batch = db_settings.get('artist_batch', self.artist_batch)
+        except Exception as e:
+            print(f"Database Error: {str(e)}")
 
     def set_language(self):
-        db_lang, _ = set_db.get_variable('BOT_LANGUAGE') #str
-        self.bot_lang = db_lang if db_lang else 'en'
+        """Set the language for the bot"""
+        from bot.helpers.translations.tr_en import EN
+        self.lang = EN()
 
-        for item in lang_available:
-            if item.__language__ == self.bot_lang:
-                lang.s = item
-                break
+    def set_db(self):
+        """Initialize database connection if URL exists"""
+        if Config.DATABASE_URL:
+            set_db()
+            
+    def check_shared_username(self,username):
+        pass
 
+    def check_auth(self,user_id) -> bool:
+        return True
 
+    def check_admin(self,user_id) -> bool:
+        try:
+            if check_id(user_id) or Config.OWNER_ID == str(user_id):
+                return True
+        except:
+            if str(Config.OWNER_ID) == str(user_id):
+                return True
+        return False
+
+    def toggle_public(self):
+        self.bot_public = not self.bot_public
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'bot_public':not self.bot_public},
+                {'$set':{'bot_public':self.bot_public}},
+                upsert=True
+            )
+
+    def toggle_antispam(self):
+        self.anti_spam = not self.anti_spam
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'anti_spam':not self.anti_spam},
+                {'$set':{'anti_spam':self.anti_spam}},
+                upsert=True
+            )
+        
+    def toggle_post_art(self):
+        self.post_art = not self.post_art
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'post_art':not self.post_art},
+                {'$set':{'post_art':self.post_art}},
+                upsert=True
+            )
+
+    def toggle_sort_playlist(self):
+        self.sort_playlist = not self.sort_playlist
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'sort_playlist':not self.sort_playlist},
+                {'$set':{'sort_playlist':self.sort_playlist}},
+                upsert=True
+            )
+
+    def toggle_disable_sort_link(self):
+        self.disable_sort_link = not self.disable_sort_link
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'disable_sort_link':not self.disable_sort_link},
+                {'$set':{'disable_sort_link':self.disable_sort_link}},
+                upsert=True
+            )
+
+    def toggle_playlist_zip(self):
+        self.playlist_zip = not self.playlist_zip
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'playlist_zip':not self.playlist_zip},
+                {'$set':{'playlist_zip':self.playlist_zip}},
+                upsert=True
+            )
+
+    def toggle_playlist_conc(self):
+        self.playlist_conc = not self.playlist_conc
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'playlist_conc':not self.playlist_conc},
+                {'$set':{'playlist_conc':self.playlist_conc}},
+                upsert=True
+            )
+
+    def toggle_artist_zip(self):
+        self.artist_zip = not self.artist_zip
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'artist_zip':not self.artist_zip},
+                {'$set':{'artist_zip':self.artist_zip}},
+                upsert=True
+            )
+
+    def toggle_album_zip(self):
+        self.album_zip = not self.album_zip
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'album_zip':not self.album_zip},
+                {'$set':{'album_zip':self.album_zip}},
+                upsert=True
+            )
+
+    def toggle_artist_batch(self):
+        self.artist_batch = not self.artist_batch
+        if Config.DATABASE_URL:
+            settings_dict.update_one(
+                {'artist_batch':not self.artist_batch},
+                {'$set':{'artist_batch':self.artist_batch}},
+                upsert=True
+            )
+
+# Create instance
 bot_set = BotSettings()
