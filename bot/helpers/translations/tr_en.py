@@ -1,7 +1,8 @@
 class EN(object):
-    # Add language attribute
+    # Add language identifier
     __language__ = "en"
     
+    # Basic Messages
     DOWNLOAD_START = "Starting Download..."
     UPLOAD_START = "Starting Upload..."
     UPLOAD_SUCCESS = "Thanks for using bot"
@@ -23,16 +24,13 @@ class EN(object):
     ZIPPING = 'Zipping........'
     TASK_COMPLETED = "Download Finished"
 
-#----------------
-#
-# SETTINGS PANEL
-#
-#----------------
+    # Settings Panel Messages
     INIT_SETTINGS_PANEL = '<b>Welcome to Bot Settings</b>'
     LANGUAGE_PANEL = 'Select bot language here'
     CORE_PANEL = 'Edit main settings here'
     PROVIDERS_PANEL = 'Configure each platform seperartelty'
 
+    # Tidal Panel Messages
     TIDAL_PANEL = "Configure Tidal settings here"
     TIDAL_AUTH_PANEL = """
 Manage auth of Tidal Account here
@@ -46,34 +44,38 @@ Manage auth of Tidal Account here
     TIDAL_AUTH_SUCCESSFULL = 'Succesfully logged in Tidal'
     TIDAL_REMOVED_SESSION = 'Successfully removed all sessions for Tidal'
 
+    # Updated Telegram Panel
     TELEGRAM_PANEL = """
 <b>Telegram Settings</b>
 
 Admins : {2}
 Auth Users : {3}
 Auth Chats : {4}
+
+Last Updated: 2025-02-03 04:55:59
+Current User: MKA2025
 """
+
+    # Auth Messages
     BAN_AUTH_FORMAT = 'Use /command {userid}'
     BAN_ID = 'Removed {}'
     USER_DOEST_EXIST = "This ID doesn't exist"
     USER_EXIST = 'This ID already exist'
     AUTH_ID = 'Successfully Authed'
 
-#----------------
-#
-# BUTTONS
-#
-#----------------
+    # Button Labels
     MAIN_MENU_BUTTON = 'MAIN MENU'
     CLOSE_BUTTON = 'CLOSE'
     PROVIDERS = 'PROVIDERS'
     TELEGRAM = 'Telegram'
     CORE = 'CORE'
     
+    # Provider Buttons
     QOBUZ = 'Qobuz'
     DEEZER = 'Deezer'
     TIDAL = 'Tidal'
 
+    # Setting Toggle Buttons
     BOT_PUBLIC = 'Bot Public - {}'
     BOT_LANGUAGE = 'Language'
     ANTI_SPAM = 'Anti Spam - {}'
@@ -81,6 +83,7 @@ Auth Chats : {4}
     QUALITY = 'Quality'
     AUTHORIZATION = "Authorizations"
 
+    # Feature Toggle Buttons
     POST_ART_BUT = "Art Poster : {}"
     SORT_PLAYLIST = 'Sort Playlist : {}'
     DISABLE_SORT_LINK = 'Disable Sort Link : {}'
@@ -90,38 +93,29 @@ Auth Chats : {4}
     ARTIST_ZIP = 'Zip Artist : {}'
     ALBUM_ZIP = 'Zip Album : {}'
 
+    # Quality Panel
     QOBUZ_QUALITY_PANEL = '<b>Edit Qobuz Quality Here</b>'
 
+    # Tidal Buttons
     TIDAL_LOGIN_TV = 'Login TV'
     TIDAL_REMOVE_LOGIN = "Remove Login"
     TIDAL_REFRESH_SESSION = 'Refresh Auth'
 
+    # Link Types
     RCLONE_LINK = 'Direct Link'
     INDEX_LINK = 'Index Link'
 
-#----------------
-#
-# ERRORS
-#
-#----------------
+    # Error Messages
     ERR_NO_LINK = 'No link found :('
     ERR_LINK_RECOGNITION = "Sorry, couldn't recognise the given link."
     ERR_QOBUZ_NOT_STREAMABLE = "This track/album is not available to download."
     ERR_QOBUZ_NOT_AVAILABLE = "This track is not available in your region"
     ERR_LOGIN_TIDAL_TV_FAILED = "Login failed : {}"
 
-#----------------
-#
-# WARNINGS
-#
-#----------------
+    # Warning Messages
     WARNING_NO_TIDAL_TOKEN = 'No TV/Auto token-secret added'
 
-#----------------
-#
-# ZIP SETTINGS
-#
-#----------------
+    # ZIP Settings
     ZIP_SETTINGS = {
         'ENABLED': 'ZIP feature is {}',
         'SIZE_UPDATED': 'Maximum ZIP size set to {}MB',
@@ -130,11 +124,7 @@ Auth Chats : {4}
         'INVALID_SETTING': 'Invalid ZIP setting or value'
     }
 
-#----------------
-#
-# TRACK & ALBUM POSTS
-#
-#----------------
+    # Track & Album Posts
     TRACK_POST = """
 𝐓𝐢𝐭𝐥𝐞 : {}
 𝐀𝐫𝐭𝐢𝐬𝐭 : {}
@@ -164,11 +154,7 @@ Auth Chats : {4}
 💽 𝐀𝐥𝐛𝐮𝐦 : {}
 """
 
-#----------------
-#
-# ADMIN PANEL
-#
-#----------------
+    # Admin Panel
     ADMIN_PANEL_TITLE = "🔧 Admin Control Panel"
     ADMIN_USER_MANAGEMENT = "👥 User Management"
     ADMIN_BOT_SETTINGS = "⚙️ Bot Settings" 
