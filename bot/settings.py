@@ -18,7 +18,7 @@ class BotSettings:
     def __init__(self):
         # Initialize basic settings
         self.bot_lang = "en"
-        self.last_updated = "2025-02-03 02:05:30"
+        self.last_updated = "2025-02-03 04:39:36"
         self.current_user = "MKA2025"
         
         # Set core configurations
